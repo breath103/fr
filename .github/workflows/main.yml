@@ -10,8 +10,8 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: catch
-          MYSQL_USER: catch
+          MYSQL_DATABASE: fr
+          MYSQL_USER: fr
           MYSQL_PASSWORD: password
         options: >-
           --health-cmd "mysqladmin ping -h 127.0.0.1" --health-interval 10s --health-timeout 5s --health-retries 5
@@ -33,7 +33,7 @@ jobs:
         run: npm run test:ci
         env:
           REDIS_URL: redis://redis:6379/10
-          AFFILIATE_MYSQL_DB_URL: mysql://catch:password@mysql:3306/catch
+          AFFILIATE_MYSQL_DB_URL: mysql://fr:password@mysql:3306/fr
       - name: Deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |

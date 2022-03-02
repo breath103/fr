@@ -23,15 +23,15 @@ export const router = new Router([
   }),
 ], {
   middlewares: [
-    new AuthenticationMiddleware(),
     new DefaultResponseHeaderMiddleware({
       "Cache-Control": "no-store",
       "Content-Type": "application/json; charset=utf-8",
     }),
+    new AuthenticationMiddleware(),
   ],
 });
 
-export const __handler = router.handler();
+const __handler = router.handler();
 export const handler = async (event: Event, context: Context) => {
   // Allow CORS
   if (event.httpMethod === "OPTIONS") {
@@ -45,8 +45,8 @@ export const handler = async (event: Event, context: Context) => {
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
         "Access-Control-Allow-Headers": [
           "Content-Type",
-          "X-Catch-Auth-Token",
-          "X-Catch-User-Agent",
+          "X-Fr-Auth-Token",
+          "X-Fr-User-Agent",
         ].join(","),
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Max-Age": `${60 * 60 * 24 * 30}`,

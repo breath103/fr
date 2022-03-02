@@ -37,7 +37,7 @@ export class DefaultResponseHeaderMiddleware implements Middleware {
         ].join(","),
         "Access-Control-Allow-Headers": [
           "Content-Type",
-          "X-Catch-Auth-Token",
+          "X-Fr-Auth-Token",
         ].join(","),
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Max-Age": moment.duration(30, "days").asSeconds().toString(),
