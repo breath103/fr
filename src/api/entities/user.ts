@@ -16,3 +16,9 @@ export const Me = Type.Object({
 });
 
 export const MeShow = DataLayout(Me);
+
+export const User = Type.Object({
+  id: Type.String(),
+  nickname: Type.String(),
+});
+export const UserShow = DataLayout(User);

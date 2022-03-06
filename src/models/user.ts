@@ -102,6 +102,9 @@ export class User extends Table {
   @Decorator.Attribute({ name: "nickname" })
   public nickname!: string;
 
+  @Decorator.Attribute({ name: "isHuman" })
+  public isHuman: boolean = false;
+
   @Decorator.Attribute({ name: "encryptedPassword" })
   public encryptedPassword!: string;
   
