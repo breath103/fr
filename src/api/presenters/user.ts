@@ -26,3 +26,12 @@ export const MeShow = createPresenter(Entities.MeShow, async (user: Models.User)
     },
   };
 });
+
+export const UserShow = createPresenter(Entities.UserShow, async (user: Models.User) => {
+  return {
+    data: {
+      id: user.id, 
+      nickname: user.nickname,
+    },
+  };
+});
