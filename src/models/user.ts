@@ -82,6 +82,11 @@ export class User extends Table {
     return await this.primaryKey.get(id);
   }
 
+  // Ids has to be unique
+  public static async findByIds(ids: string[]) {
+    return (await this.primaryKey.batchGet(ids)).records;
+  }
+
   public static async findByEmail(email: string): Promise<User | null> {
     return (await this.emailIndex.query(email)).records[0] || null;
   }

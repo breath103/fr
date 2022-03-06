@@ -71,10 +71,7 @@ export const route = new Namespace(
                 desc: "get post",
                 operationId: "getPost",
                 metadata: routeMetadata({ access: "guest" }),
-              }, {
-                boardId: Parameter.Query(Type.String()),
-                after: Parameter.Query(Type.Optional(Type.String())),
-              }, Presenters.PostShow, async function() {
+              }, {}, Presenters.PostShow, async function() {
                 return await fetchPost(this.params.postId);
               }),
           ],
