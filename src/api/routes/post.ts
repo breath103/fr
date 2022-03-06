@@ -57,6 +57,7 @@ export const route = new Namespace(
             boardId: this.params.boardId,
             sort: "DESC",
             count: this.params.count ?? 36,    
+            after: this.params.after,
           });
           return { data, after };
         }),
