@@ -3,7 +3,7 @@ import { Type } from "@serverless-seoul/typebox";
 
 // Models
 import * as Models from "../../models";
-import { BoardIdSchema, PostContentSchema } from "../../models";
+import { BoardIdSchema, CommentContentSchema, PostContentSchema } from "../../models";
 import { getCurrentUserId, routeMetadata } from "../helper";
 
 // Presenters
@@ -72,8 +72,64 @@ export const route = new Namespace(
                 desc: "get post",
                 operationId: "getPost",
                 metadata: routeMetadata({ access: "guest" }),
-              }, {}, Presenters.PostShow, async function() {
-                return await fetchPost(this.params.postId);
+              }, {
+                comment: Parameter.Body(Type.Object({
+                  content: CommentContentSchema,
+                })),
+              }, Presenters.SuccessShow, async function() {
+                // Check authortiy 
+                const author = await Models.User.findById(getCurrentUserId(this)!);
+                if (!author) {
+                  throw new StandardError(422, { code: "NOT_FOUND", message: "user not found" });
+                }
+                
+                const post = await fetchPost(this.params.postId);
+                if (post.boardId === "human" && !author.isHuman) {
+                  throw new StandardError(403, { code: "NOT_ALLOWED", message: "you are not human" });
+                }
+
+                await Models.Comment.create({
+                  authorId: author.id,
+                  postId: post.id,
+                  ...this.params.comment,
+                });
+                return true;
+              }),
+
+            new Namespace(
+              "/comments", {}, {
+                children: [
+                  PresenterRouteFactory.POST("", { 
+                    operationId: "createPostComment",
+                  }, {
+                    after: Parameter.Query(Type.Optional(Type.String())),
+                    count: Parameter.Query(Type.Optional(Type.Number())),          
+                  }, Presenters.CommentList, async function() {
+                    const { data, after } = await Models.Comment.paginateByPostId({
+                      postId: this.params.postId,
+                      sort: "DESC",
+                      count: this.params.count ?? 36,    
+                      after: this.params.after,
+                    });
+                    return { data, after };          
+                  }),
+
+
+                  PresenterRouteFactory.GET("", { 
+                    operationId: "getPostComments",
+                  }, {
+                    after: Parameter.Query(Type.Optional(Type.String())),
+                    count: Parameter.Query(Type.Optional(Type.Number())),          
+                  }, Presenters.CommentList, async function() {
+                    const { data, after } = await Models.Comment.paginateByPostId({
+                      postId: this.params.postId,
+                      sort: "DESC",
+                      count: this.params.count ?? 36,    
+                      after: this.params.after,
+                    });
+                    return { data, after };          
+                  }),
+                ],
               }),
           ],
         }),
